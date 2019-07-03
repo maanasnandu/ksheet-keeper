@@ -1,13 +1,30 @@
 const express = require("express");
-//node doesnt gave import statements like reqct unless we give babel etc.
-//using express js
-const app = express();
-app.get("/", (req, res) => res.json({ msg: "Welcome to the K-Sheet Keeper!" }));
+const connectDB = require("./config/db");
+const path = require("path");
 
-//Defning Routes using app.use
+const app = express();
+
+// Connect Database
+connectDB();
+
+// Init Middleware
+app.use(express.json({ extended: false }));
+
+// Define Routes
+app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/contacts", require("./routes/contacts"));
-app.use("/api/users", require("./routes/users"));
+
+// Serve static assets in production
+if (process.env.NODE_ENV === "production") {
+  // Set static folder
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+  );
+}
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server Started on port ${PORT}`));
+
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
