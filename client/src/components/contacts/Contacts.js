@@ -21,8 +21,8 @@ const Contacts = () => {
     <Fragment>
       {contacts !== null && !loading ? (
         <TransitionGroup>
-          {filtered !== null
-            ? filtered.map(contact => (
+          {contacts !== null
+            ? contacts.map(contact => (
                 <CSSTransition
                   key={contact._id}
                   timeout={500}
